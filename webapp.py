@@ -84,6 +84,7 @@ def _upload_genome_file(filename):
         allow_redirects=True,
     )
 
+
 def _get_analyses():
     response = _get_request("analyses")
     return response.json()

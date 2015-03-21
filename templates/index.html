@@ -22,7 +22,10 @@
                     <ul>
                         {% for analysis in analyses %}
                             <li>
-                                <a class="small button {{ analysis['css_class'] }}" href="{{ url_for('analysis', analysis_id=analysis['id']) }}">
+                                <a
+                                    class="small button {{ analysis['css_class'] }}"
+                                    href="{{ url_for('analysis', analysis_id=analysis['id']) }}"
+                                >
                                     {{ analysis['sample_filename'] }}
                                 </a>
                             </li>

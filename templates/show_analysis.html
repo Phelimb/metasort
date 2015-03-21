@@ -7,7 +7,6 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/foundation.css') }}" />
 
         <script src="{{ url_for('static', filename='js/vendor/modernizr.js') }}"></script>
-
     </head>
     <body>
         <div class="row">
@@ -16,21 +15,25 @@
                     <h2>Results from "{{ analysis_id }}"</h2>
 
                     <table>
-                        <tr>
-                            <td>Count</td>
-                            <td>Name</td>
-                            <td>Rank</td>
-                            <td>Tax ID</td>
-                        </tr>
-                        {% for bacteria in analysis_data %}
+                        <thead>
                             <tr>
-                                <td>{{ bacteria['readcount'] }}</td>
-                                <td>{{ bacteria['name'] }}</td>
-                                <td>{{ bacteria['rank'] }}</td>
-                                <td>{{ bacteria['tax_id'] }}</td>
+                                <th>Count</th>
+                                <th>Name</th>
+                                <th>Rank</th>
+                                <th>Tax ID</th>
                             </tr>
-                        {% endfor %}
-                    </ul>
+                        </thead>
+                        <tbody>
+                            {% for bacteria in analysis_data %}
+                                <tr>
+                                    <td>{{ bacteria['readcount'] }}</td>
+                                    <td>{{ bacteria['name'] }}</td>
+                                    <td>{{ bacteria['rank'] }}</td>
+                                    <td>{{ bacteria['tax_id'] }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
