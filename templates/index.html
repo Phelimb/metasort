@@ -16,7 +16,7 @@
     </head>
     <body>
         <div class="row">
-            <div class="large-12 columns">
+            <div class="large-8 columns">
                 <div class="panel">
                     <h2>Already Uploaded Files:</h2>
                     <ul>
@@ -32,17 +32,17 @@
                         {% endfor %}
                     </ul>
                 </div>
+            </div>
 
-                <hr />
-
+            <div class="small-4 columns">
                 <div class="panel">
                     <h2>Upload a File:</h2>
 
                     <form action="/upload_file" method="POST" enctype="multipart/form-data">
                         <label for="file">Upload:</label>
-                        <input class="button" name="file" type="file" />
+                        <input class="tiny button secondary" name="file" type="file" />
 
-                        <input class="button success" type="submit" />
+                        <input class="small button" type="submit" value="Upload" />
                     </form>
                 </div>
             </div>
