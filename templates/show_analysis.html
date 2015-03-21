@@ -1,0 +1,41 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <title>Analysis Results</title>
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/foundation.css') }}" />
+
+        <script src="{{ url_for('static', filename='js/vendor/modernizr.js') }}"></script>
+
+    </head>
+    <body>
+        <div class="row">
+            <div class="large-12 columns">
+                <div class="panel">
+                    <h2>Results from "{{ analysis_id }}"</h2>
+
+                    <table>
+                        <tr>
+                            <td>Count</td>
+                            <td>Name</td>
+                            <td>Rank</td>
+                            <td>Tax ID</td>
+                        </tr>
+                        {% for bacteria in analysis_data %}
+                            <tr>
+                                <td>{{ bacteria['readcount'] }}</td>
+                                <td>{{ bacteria['name'] }}</td>
+                                <td>{{ bacteria['rank'] }}</td>
+                                <td>{{ bacteria['tax_id'] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script src="{{ url_for('static', filename='js/vendor/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/foundation.min.js') }}"></script>
+</html>

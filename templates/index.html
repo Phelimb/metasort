@@ -3,13 +3,49 @@
         <meta charset="utf-8">
 
         <title>Upload Genome</title>
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/foundation.css') }}" />
+
+        <script src="{{ url_for('static', filename='js/vendor/modernizr.js') }}"></script>
+
+        <style>
+            ul li {
+                list-style-type: none;
+            }
+        </style>
     </head>
     <body>
-        <form action="/upload_file" method="POST" enctype="multipart/form-data">
-            Upload:
-            <input name="file" type="file">
+        <div class="row">
+            <div class="large-12 columns">
+                <div class="panel">
+                    <h2>Already Uploaded Files:</h2>
+                    <ul>
+                        {% for analysis in analyses %}
+                            <li>
+                                <a class="small button {{ analysis['css_class'] }}" href="{{ url_for('analysis', analysis_id=analysis['id']) }}">
+                                    {{ analysis['sample_filename'] }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
 
-            <input type="submit">
-        </form>
+                <hr />
+
+                <div class="panel">
+                    <h2>Upload a File:</h2>
+
+                    <form action="/upload_file" method="POST" enctype="multipart/form-data">
+                        <label for="file">Upload:</label>
+                        <input class="button" name="file" type="file" />
+
+                        <input class="button success" type="submit" />
+                    </form>
+                </div>
+            </div>
+        </div>
     </body>
+
+    <script src="{{ url_for('static', filename='js/vendor/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/foundation.min.js') }}"></script>
 </html>
