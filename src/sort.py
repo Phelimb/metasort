@@ -80,6 +80,7 @@ class FastqSorter(object):
 
     def write_sorted_files(self):
     	for species,record_list in self.records_by_species.iteritems():
+    		print species
     		with open("/tmp/" + species.replace(' ','_').replace('/','')+".fastq",'w') as outfile:
     			SeqIO.write(record_list, outfile, "fastq")
 
