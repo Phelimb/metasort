@@ -5,9 +5,11 @@
         <title>Upload Genome</title>
     </head>
     <body>
-        <form>
+        <form action="/upload_file" method="POST" enctype="multipart/form-data">
             Upload:
-            <input name="upload_file" type="file">
+            <input name="file" type="file">
+
+            <input type="submit">
         </form>
     </body>
 </html>
