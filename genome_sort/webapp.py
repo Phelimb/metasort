@@ -1,9 +1,10 @@
 from os.path import join as join_path
 from os import listdir
 import os
-import json 
+import json
 
 from flask import Flask
+from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -18,10 +19,11 @@ from genome_sort import get_sample_id_from_analysis_id
 from genome_sort import is_allowed_file
 from genome_sort import upload_genome_file
 from genome_sort import format_analyses
-from genome_sort import process_analysis 
+from genome_sort import process_analysis
 
 from sort import FastqSorter
 APP = Flask(__name__)
+APP.secret_key = 'saldjsaldjlsdlsjdal'
 
 _UPLOAD_FOLDER = '/tmp'
 APP.config['UPLOAD_FOLDER'] = _UPLOAD_FOLDER
@@ -37,6 +39,7 @@ def get_taxon_to_species_dict():
 
 @APP.route('/')
 def index():
+    flash('Hello World')
     files = []
     for file in listdir(_UPLOAD_FOLDER):
         if file.endswith((".fastq",".fq",".fa",".fasta")):
@@ -87,9 +90,9 @@ def analysis(analysis_id):
 @APP.route('/sort_sequence/<analysis_id>')
 def sort_sequence(analysis_id):
     sample_id = get_sample_id_from_analysis_id(analysis_id)
-    process_analysis(analysis_id)    
+    process_analysis(analysis_id)
     fasta_file_path = join_path(APP.config['UPLOAD_FOLDER'],sample_id + '.fastq')
-    readlevel_assignment_tsv_file_path = join_path(APP.config['UPLOAD_FOLDER'],"read_data_" + analysis_id + '.tsv')    
+    readlevel_assignment_tsv_file_path = join_path(APP.config['UPLOAD_FOLDER'],"read_data_" + analysis_id + '.tsv')
     if not os.path.exists(readlevel_assignment_tsv_file_path):
         return redirect('/?error=noana')
     sorter = FastqSorter(fasta_file_path,readlevel_assignment_tsv_file_path, analysis_id = analysis_id)

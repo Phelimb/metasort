@@ -1,54 +1,42 @@
-<html>
-    <head>
-        <meta charset="utf-8">
+{% extends "skeleton.html" %}
 
-        <title>Analysis Results</title>
+{% block title %}Analysis Results{% endblock %}
 
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/foundation.css') }}" />
+{% block body %}
+    <div class="row">
+        <div class="large-12 columns">
+            <div class="panel">
+                <a class="small button" href="/">Home</a>
 
-        <script src="{{ url_for('static', filename='js/vendor/modernizr.js') }}"></script>
-    </head>
-    <body>
-        <div class="row">
-            <div class="large-12 columns">
-                <div class="panel">
-                    <a class="small button" href="/">
-                                        Home
-                                        </a>
-                    <h2>Results from "{{ analysis_id }}"</h2>
+                <h2>Results from "{{ analysis_id }}"</h2>
 
-                    <table>
-                        <thead>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Count</th>
+                            <th>Name</th>
+                            <th>Rank</th>
+                            <th>Tax ID</th>
+                            <th>Download Reads</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bacteria in analysis_data %}
                             <tr>
-                                <th>Count</th>
-                                <th>Name</th>
-                                <th>Rank</th>
-                                <th>Tax ID</th>
-                                <th>Download Reads</th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for bacteria in analysis_data %}
-                                <tr>
-                                    <td>{{ bacteria['readcount'] }}</td>
-                                    <td>{{ bacteria['name'] }}</td>
-                                    <td>{{ bacteria['rank'] }}</td>
-                                    <td>{{ bacteria['tax_id'] }}</td>
-                                    <td>
-                                        <a class="small button" href="/analysis/{{ analysis_id }}/{{bacteria['tax_id'] }}">
+                                <td>{{ bacteria['readcount'] }}</td>
+                                <td>{{ bacteria['name'] }}</td>
+                                <td>{{ bacteria['rank'] }}</td>
+                                <td>{{ bacteria['tax_id'] }}</td>
+                                <td>
+                                    <a class="small button" href="/analysis/{{ analysis_id }}/{{bacteria['tax_id'] }}">
                                         Download
-                                        </a>
-                                    </td>                                    
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
-    </body>
-
-    <script src="{{ url_for('static', filename='js/vendor/jquery.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/foundation.min.js') }}"></script>
-</html>
+    </div>
+{% endblock %}
