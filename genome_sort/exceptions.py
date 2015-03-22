@@ -1,0 +1,2 @@
+def AnalysisNotFound(Exception):
+    pass
