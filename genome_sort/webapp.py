@@ -39,7 +39,10 @@ def get_taxon_to_species_dict():
 
 @APP.route('/')
 def index():
-    flash('Hello World')
+    flash('Hello World', 'alert')
+    flash('Hello World', 'info')
+    flash('Hello World', 'success')
+    flash('Hello World', 'warning')
     files = []
     for file in listdir(_UPLOAD_FOLDER):
         if file.endswith(".fastq"):
