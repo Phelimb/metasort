@@ -4,6 +4,7 @@ from os import rename
 
 import requests
 
+
 _ALLOWED_EXTENSIONS = set(['fastq'])
 _ONECODEX_APIKEY = environ['ONE_CODEX_API_KEY']
 _BASE_API_URL = "https://beta.onecodex.com/api/v0/"
@@ -77,10 +78,5 @@ def format_analyses(analyses):
     return formatted_analyses
 
 
-class AnalysisNotFound(Exception):
-    pass
-
-
 def get_sample_id_from_analysis_id(analysis_id):
     pass
-

@@ -84,4 +84,3 @@ def uploaded_file(filename):
     sample_id = upload_genome_file(filename)
     change_file_name(filename,sample_id)
     return redirect(url_for('index'))
-
