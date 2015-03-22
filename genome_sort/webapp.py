@@ -2,6 +2,7 @@ from os.path import join as join_path
 from os import listdir
 import os
 import json
+import glob 
 
 from flask import Flask
 from flask import flash
@@ -82,8 +83,10 @@ def _change_file_ext_to_long(filename):
 def download_species_data(analysis_id,tax_id):
     uploads = join_path(APP.config['UPLOAD_FOLDER'],analysis_id)
     species = get_taxon_to_species_dict()[tax_id]
-    return send_from_directory(directory=uploads, filename=tax_id+".fastq",
-                                attachment_filename="%s.fastq" % species,
+    filename = os.path.basename(glob.glob(uploads + "/*")[0])
+    ext = filename.rsplit('.', 1)[1]
+    return send_from_directory(directory=uploads, filename=filename,
+                                attachment_filename="%s.%s" % (species,ext),
                                 as_attachment = True)
 
 @APP.route('/analysis/<analysis_id>')
@@ -101,8 +104,11 @@ def analysis(analysis_id):
 @APP.route('/sort_sequence/<analysis_id>')
 def sort_sequence(analysis_id):
     sample_id = get_sample_id_from_analysis_id(analysis_id)
-    process_analysis(analysis_id)
-    fasta_file_path = join_path(APP.config['UPLOAD_FOLDER'],sample_id + '.fastq')
+    try:
+        process_analysis(analysis_id)
+    except IOError:
+        pass
+    fasta_file_path =  glob.glob(join_path(APP.config['UPLOAD_FOLDER'],sample_id + "*"))[0]
     readlevel_assignment_tsv_file_path = join_path(APP.config['UPLOAD_FOLDER'],"read_data_" + analysis_id + '.tsv')
     if not os.path.exists(readlevel_assignment_tsv_file_path):
         return redirect('/?error=noana')

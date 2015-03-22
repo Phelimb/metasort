@@ -27,8 +27,8 @@ class FastqSorter(object):
         self.assignment_dic = {}
         self.get_assignment_dic()
         self.records_by_tax_id= {}
-        self.taxon_id_to_species = self.get_taxon_to_species_dict()
         self.analysis_id = analysis_id
+        self.ext = self.fasta_file_path.rsplit('.', 1)[1]
 
     def sort(self):
         self.sort_reads_by_taxon_id()
@@ -38,13 +38,15 @@ class FastqSorter(object):
         with open(self.readlevel_assignment_tsv_file_path,'r') as infile:
             reader = csv.reader(infile,delimiter= "\t")
             for row in reader:
-                read_id = row[0].replace('@','')
+                read_id = row[0].replace('@','').replace(">","")
                 taxon_id = row[1]
+
                 self.assignment_dic[read_id] = taxon_id
+            print self.assignment_dic
 
     def sort_reads_by_taxon_id(self):
-        for i,record in enumerate(SeqIO.parse(self.fasta_file_path, "fastq")):
-            taxon_id = self.assignment_dic[record.id]
+        for i,record in enumerate(SeqIO.parse(self.fasta_file_path, self.ext)):
+            taxon_id = self.assignment_dic[record.description]
             try:
                 self.records_by_tax_id[taxon_id].append(record)
             except KeyError:
@@ -54,9 +56,9 @@ class FastqSorter(object):
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
         for taxon_id,record_list in self.records_by_tax_id.iteritems():
-            filename = taxon_id + ".fastq"
+            filename = ".".join([taxon_id , self.ext])
             with open(join_path(out_dir,filename),'w') as outfile:
-                SeqIO.write(record_list, outfile, "fastq")
+                SeqIO.write(record_list, outfile, self.ext)
 
     def get_all_species_present(self):
         return unique(self.assignment_dic.values())
