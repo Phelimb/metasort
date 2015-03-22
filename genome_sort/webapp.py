@@ -1,6 +1,8 @@
 from os.path import join as join_path
 from os import listdir
 import os
+import json 
+
 from flask import Flask
 from flask import redirect
 from flask import render_template
@@ -23,6 +25,14 @@ APP = Flask(__name__)
 
 _UPLOAD_FOLDER = '/tmp'
 APP.config['UPLOAD_FOLDER'] = _UPLOAD_FOLDER
+
+def get_taxon_to_species_dict():
+    tax_id_to_species = {}
+    with open('genome_sort/taxonomy_metadata.json','r') as infile:
+        data = json.load(infile)
+        for tax_id,species_dict in data.iteritems():
+            tax_id_to_species[tax_id] = species_dict['name']
+    return tax_id_to_species
 
 
 @APP.route('/')
@@ -56,7 +66,10 @@ def upload_file():
 @APP.route('/analysis/<analysis_id>/<tax_id>')
 def download_species_data(analysis_id,tax_id):
     uploads = join_path(APP.config['UPLOAD_FOLDER'],analysis_id)
-    return send_from_directory(directory=uploads, filename=tax_id+".fastq")
+    species = get_taxon_to_species_dict()[tax_id]
+    return send_from_directory(directory=uploads, filename=tax_id+".fastq",
+                                attachment_filename="%s.fastq" % species,
+                                as_attachment = True)
 
 @APP.route('/analysis/<analysis_id>')
 def analysis(analysis_id):

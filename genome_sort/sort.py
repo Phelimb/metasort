@@ -64,9 +64,6 @@ class FastqSorter(object):
     def count_read_assignment(self):
         return Counter(self.assignment_dic.values())
 
-    def get_taxon_to_species_dict(self):
-        with open('genome_sort/taxonomy_metadata.json','r') as infile:
-            return json.load(infile)
 
 
 
