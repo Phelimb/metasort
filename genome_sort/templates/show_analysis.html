@@ -1,14 +1,8 @@
-<html>
-    <head>
-        <meta charset="utf-8">
+{% extends "skeleton.html" %}
 
-        <title>Analysis Results</title>
+{% block title %}Analysis Results{% endblock %}
 
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/foundation.css') }}" />
-
-        <script src="{{ url_for('static', filename='js/vendor/modernizr.js') }}"></script>
-    </head>
-    <body>
+{% block body %}
         <div class="row">
             <div class="large-12 columns">
                 <div class="panel">
@@ -36,7 +30,7 @@
                                         <a class="small button" href="/analysis/{{ analysis_id }}/{{bacteria['tax_id'] }}">
                                         Download
                                         </a>
-                                    </td>                                    
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -44,8 +38,4 @@
                 </div>
             </div>
         </div>
-    </body>
-
-    <script src="{{ url_for('static', filename='js/vendor/jquery.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/foundation.min.js') }}"></script>
-</html>
+{% endblock %}
