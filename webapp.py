@@ -44,7 +44,7 @@ def upload_file():
     if file and _is_allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(join_path(_APP.config['UPLOAD_FOLDER'], filename))
-        return redirect(url_for('index'))
+        return redirect('/uploads/%s' % filename)
     else:
         return '<p>File error</p>'
 
@@ -74,7 +74,6 @@ def _is_allowed_file(filename):
 
 
 def _upload_genome_file(filename):
-    print filename
     absolute_filename = join_path(
         _APP.config['UPLOAD_FOLDER'],
         filename
