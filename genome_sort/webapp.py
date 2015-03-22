@@ -40,18 +40,24 @@ def get_taxon_to_species_dict():
 
 @APP.route('/')
 def index():
-    flash('Hello World', 'alert')
-    flash('Hello World', 'info')
-    flash('Hello World', 'success')
-    flash('Hello World', 'warning')
+    # flash('Hello World', 'alert')
+    # flash('Hello World', 'info')
+    # flash('Hello World', 'success')
+    # flash('Hello World', 'warning')
     files = []
     for file in listdir(_UPLOAD_FOLDER):
         if file.endswith((".fastq",".fq",".fa",".fasta")):
             files.append(file)
 
-    analyses = get_analyses()
-    analyses = [ana for ana in analyses if ana['reference_name'] == "One Codex Database"]
+    analyses = get_analyses()    
+    user_sample_list = request.cookies.get('samples',None)
+    if user_sample_list is not None:
+        user_sample_list = user_sample_list.split(",")
+    else:
+        user_sample_list = []
+    analyses = [ana for ana in analyses if ana['reference_name'] == "One Codex Database" and get_sample_id_from_analysis_id(ana["id"]) in user_sample_list]
     analyses.reverse()
+    
     formatted_analyses = format_analyses(analyses)
     response = render_template(
         'index.html',
@@ -111,7 +117,7 @@ def sort_sequence(analysis_id):
     fasta_file_path =  glob.glob(join_path(APP.config['UPLOAD_FOLDER'],sample_id + "*"))[0]
     readlevel_assignment_tsv_file_path = join_path(APP.config['UPLOAD_FOLDER'],"read_data_" + analysis_id + '.tsv')
     if not os.path.exists(readlevel_assignment_tsv_file_path):
-        return redirect('/?error=noana')
+        flash('Please wait until analysis is complete', 'alert')
     sorter = FastqSorter(fasta_file_path,readlevel_assignment_tsv_file_path, analysis_id = analysis_id)
     sorter.sort()
     sorter.write_sorted_files(out_dir = join_path(APP.config['UPLOAD_FOLDER'],analysis_id) )
@@ -120,5 +126,8 @@ def sort_sequence(analysis_id):
 @APP.route('/uploads/<filename>')
 def uploaded_file(filename):
     sample_id = upload_genome_file(filename)
-    change_file_name(filename,sample_id)
-    return redirect(url_for('index'))
+    response = redirect(url_for('index'))
+    user_sample_list = request.cookies.get('samples',"")
+    response.set_cookie('samples',user_sample_list + "," + sample_id)
+    change_file_name(filename,sample_id)    
+    return response

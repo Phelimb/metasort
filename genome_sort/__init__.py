@@ -8,7 +8,7 @@ from requests import get as get_request
 from requests import post as post_request
 
 from genome_sort.exceptions import AnalysisNotFound
-
+from flask import request
 
 _ALLOWED_EXTENSIONS = set(["fastq","fq","fa","fasta"])
 _ONECODEX_APIKEY = environ['ONE_CODEX_API_KEY']
@@ -42,7 +42,8 @@ def upload_genome_file(filename):
         files=files,
         allow_redirects=True,
     )
-    return response.json()['sample_id']
+    sample_id = response.json()['sample_id']
+    return sample_id
 
 
 def get_analyses():
