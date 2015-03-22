@@ -59,6 +59,8 @@ def download_species_data(analysis_id,tax_id):
 
 @APP.route('/analysis/<analysis_id>')
 def analysis(analysis_id):
+    if not os.path.exists(join_path(APP.config['UPLOAD_FOLDER'],analysis_id)):
+        return redirect("/sort_sequence/%s" % analysis_id)
     data = get_analysis_table_from_id(analysis_id)
     response = render_template(
         'show_analysis.html',
