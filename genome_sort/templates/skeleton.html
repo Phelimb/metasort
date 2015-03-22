@@ -16,12 +16,12 @@
 
         <div class="row">
             <div class="large-12 columns">
-                {% with messages = get_flashed_messages() %}
+                {% with messages = get_flashed_messages(with_categories=True) %}
                     {% if messages %}
-                        {% for message in messages %}
+                        {% for category, message in messages %}
                             <div
                                 data-alert
-                                class="alert-box alert"
+                                class="alert-box {{ category }}"
                             >
                                 {{ message }}
                                 <a
@@ -40,4 +40,9 @@
 
     <script src="{{ url_for('static', filename='js/vendor/jquery.js') }}"></script>
     <script src="{{ url_for('static', filename='js/foundation.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/foundation/foundation.alert.js') }}"></script>
+
+    <script>
+        $(document).foundation();
+    </script>
 </html>
