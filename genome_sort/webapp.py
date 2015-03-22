@@ -61,11 +61,19 @@ def upload_file():
     file = request.files['file']
     if file and is_allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        print filename
+        filename = _change_file_ext_to_long(filename)
         file.save(join_path(APP.config['UPLOAD_FOLDER'], filename))
         return redirect('/uploads/%s' % filename)
     else:
         return '<p>File error</p>'
+
+def _change_file_ext_to_long(filename):
+    ext = filename.rsplit('.', 1)[1]
+    if ext == "fq":
+        filename = filename.replace("fq","fastq")
+    elif ext == "fa":
+        filename =filename.replace("fa","fasta")
+    return filename
 
 @APP.route('/analysis/<analysis_id>/<tax_id>')
 def download_species_data(analysis_id,tax_id):

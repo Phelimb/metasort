@@ -10,7 +10,7 @@ from requests import post as post_request
 from genome_sort.exceptions import AnalysisNotFound
 
 
-_ALLOWED_EXTENSIONS = set(['fastq'])
+_ALLOWED_EXTENSIONS = set(["fastq","fq","fa","fasta"])
 _ONECODEX_APIKEY = environ['ONE_CODEX_API_KEY']
 _BASE_API_URL = "https://beta.onecodex.com/api/v0/"
 _UPLOAD_FOLDER = '/tmp'
@@ -18,7 +18,9 @@ _UPLOAD_FOLDER = '/tmp'
 
 def change_file_name(filename,sample_id):
     filepath = join_path(_UPLOAD_FOLDER, filename)
-    rename(filepath, filepath.replace(filename.rsplit('.', 1)[0],sample_id))
+    basename = filename.rsplit('.', 1)[0]
+    filename = filename.replace(basename,sample_id)
+    rename(filepath, join_path(_UPLOAD_FOLDER, filename))
 
 
 def is_allowed_file(filename):
