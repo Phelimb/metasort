@@ -26,16 +26,12 @@ class FastqSorter(object):
         self.readlevel_assignment_tsv_file_path = readlevel_assignment_tsv_file_path
         self.assignment_dic = {}
         self.get_assignment_dic()
-        self.records_by_species= {}
+        self.records_by_tax_id= {}
         self.taxon_id_to_species = self.get_taxon_to_species_dict()
         self.analysis_id = analysis_id
-        self.out_dir = join_path(_APP.config['UPLOAD_FOLDER'],self.analysis_id)
-
 
     def sort(self):
-        self.sort_reads_by_species()
-        self.write_sorted_files()
-
+        self.sort_reads_by_taxon_id()
 
     def get_assignment_dic(self):
         self.assignment_dic = {}
@@ -46,19 +42,19 @@ class FastqSorter(object):
                 taxon_id = row[1]
                 self.assignment_dic[read_id] = taxon_id
 
-    def sort_reads_by_species(self):
+    def sort_reads_by_taxon_id(self):
         for i,record in enumerate(SeqIO.parse(self.fasta_file_path, "fastq")):
-            species = self.taxon_id_to_species[self.assignment_dic[record.id]]['name']
+            taxon_id = self.assignment_dic[record.id]
             try:
-                self.records_by_species[species].append(record)
+                self.records_by_tax_id[taxon_id].append(record)
             except KeyError:
-                self.records_by_species[species] = [record]
+                self.records_by_tax_id[taxon_id] = [record]
 
     def write_sorted_files(self,out_dir):
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
-        for species,record_list in self.records_by_species.iteritems():
-            filename = species.replace(' ','_').replace('/','_')+".fastq"
+        for taxon_id,record_list in self.records_by_tax_id.iteritems():
+            filename = taxon_id + ".fastq"
             with open(join_path(out_dir,filename),'w') as outfile:
                 SeqIO.write(record_list, outfile, "fastq")
 
@@ -69,7 +65,7 @@ class FastqSorter(object):
         return Counter(self.assignment_dic.values())
 
     def get_taxon_to_species_dict(self):
-        with open('taxonomy_metadata.json','r') as infile:
+        with open('genome_sort/taxonomy_metadata.json','r') as infile:
             return json.load(infile)
 
 
