@@ -28,6 +28,8 @@ def index():
             files.append(file)
 
     analyses = _get_analyses()
+    analyses = [ana for ana in analyses if ana['reference_name'] == "One Codex Database"]
+    analyses.reverse()
     formatted_analyses = _format_analyses(analyses)
     response = render_template(
         'index.html',
@@ -72,6 +74,7 @@ def _is_allowed_file(filename):
 
 
 def _upload_genome_file(filename):
+    print filename
     absolute_filename = join_path(
         _APP.config['UPLOAD_FOLDER'],
         filename
