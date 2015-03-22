@@ -65,20 +65,18 @@ def analysis(analysis_id):
     )
     return response
 
-# @_APP.route('/sort_sequence/<analysis_id>')
-# def sort_sequence(analysis_id):
-#     data = _get_analysis_table_from_id(analysis_id)
-#     FastqSorter(fasta_file_path,readlevel_assignment_tsv_file_path, analysis_id = "")
-#     response = render_template(
-#         'show_analysis.html',
-#         analysis_id=analysis_id,
-#         analysis_data=data,
-#     )
-#     return response    
+@_APP.route('/sort_sequence/<analysis_id>')
+def sort_sequence(analysis_id):
+    sample_id = _get_sample_id_from_analysis_id(analysis_id)
+    FastqSorter(fasta_file_path,readlevel_assignment_tsv_file_path, analysis_id = "")
+    response = render_template(
+        'show_analysis.html',
+        analysis_id=analysis_id,
+        analysis_data=data,
+    )
+    return response    
 
   
-
-
 @_APP.route('/uploads/<filename>')
 def uploaded_file(filename):
     sample_id = _upload_genome_file(filename)

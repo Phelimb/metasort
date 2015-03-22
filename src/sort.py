@@ -11,8 +11,7 @@ import csv
 from collections import Counter
 import os
 from os.path import join as join_path
-ONECODEX_API_KEY = "f89f973f60c74b7e8848342f5c663378"
-ONECODEX_API_PWD = ""
+
 
 def unique(seq):
     seen = set()
