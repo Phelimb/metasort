@@ -70,14 +70,12 @@ def analysis(analysis_id):
 @APP.route('/sort_sequence/<analysis_id>')
 def sort_sequence(analysis_id):
     sample_id = get_sample_id_from_analysis_id(analysis_id)
-    FastqSorter(fasta_file_path,readlevel_assignment_tsv_file_path, analysis_id = "")
-    response = render_template(
-        'show_analysis.html',
-        analysis_id=analysis_id,
-        analysis_data=data,
-    )
-    return response
-
+    fasta_file_path = join_path(APP.config['UPLOAD_FOLDER'],sample_id,'.fastq')
+    readlevel_assignment_tsv_file_path = join_path(APP.config['UPLOAD_FOLDER'],"read_data_" + analysis_id,'.tsv')
+    sorter = FastqSorter(fasta_file_path,readlevel_assignment_tsv_file_path, analysis_id = analysis_id)
+    sorter.sort()
+    sorter.write_sorted_files(out_dir = join_path(APP.config['UPLOAD_FOLDER'],analysis_id) )
+    return redirect('/analysis/%s' % analysis_id)
 
 @APP.route('/uploads/<filename>')
 def uploaded_file(filename):

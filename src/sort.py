@@ -30,8 +30,7 @@ class FastqSorter(object):
         self.taxon_id_to_species = self.get_taxon_to_species_dict()
         self.analysis_id = analysis_id
         self.out_dir = join_path(_APP.config['UPLOAD_FOLDER'],self.analysis_id)
-        if not os.path.exists(self.out_dir):
-            os.makedirs(self.out_dir)
+
 
     def sort(self):
         self.sort_reads_by_species()
@@ -55,10 +54,12 @@ class FastqSorter(object):
             except KeyError:
                 self.records_by_species[species] = [record]
 
-    def write_sorted_files(self):
+    def write_sorted_files(self,out_dir):
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
         for species,record_list in self.records_by_species.iteritems():
             filename = species.replace(' ','_').replace('/','_')+".fastq"
-            with open(join_path(self.out_dir,filename),'w') as outfile:
+            with open(join_path(out_dir,filename),'w') as outfile:
                 SeqIO.write(record_list, outfile, "fastq")
 
     def get_all_species_present(self):
