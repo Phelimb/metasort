@@ -21,6 +21,8 @@
                                 <th>Name</th>
                                 <th>Rank</th>
                                 <th>Tax ID</th>
+                                <th>Download Reads</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -30,6 +32,11 @@
                                     <td>{{ bacteria['name'] }}</td>
                                     <td>{{ bacteria['rank'] }}</td>
                                     <td>{{ bacteria['tax_id'] }}</td>
+                                    <td>
+                                        <a class="small button" href="/analysis/329a977acf154837/{{bacteria['tax_id'] }}">
+                                        Download
+                                        </a>
+                                    </td>                                    
                                 </tr>
                             {% endfor %}
                         </tbody>

@@ -8,6 +8,7 @@ from flask import redirect
 from flask import render_template
 from flask import request
 from flask import url_for
+from flask import send_from_directory
 from werkzeug import secure_filename
 
 
@@ -48,6 +49,10 @@ def upload_file():
     else:
         return '<p>File error</p>'
 
+@_APP.route('/analysis/<analysis_id>/<tax_id>')
+def download_species_data(analysis_id,tax_id):
+    uploads = join_path(_APP.config['UPLOAD_FOLDER'],analysis_id)
+    return send_from_directory(directory=uploads, filename=tax_id+".fastq")
 
 @_APP.route('/analysis/<analysis_id>')
 def analysis(analysis_id):
@@ -58,6 +63,8 @@ def analysis(analysis_id):
         analysis_data=data,
     )
     return response
+
+  
 
 
 @_APP.route('/uploads/<filename>')
