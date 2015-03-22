@@ -1,6 +1,7 @@
 from os.path import join as join_path
 from os import environ
 from os import listdir
+import os
 
 import requests
 from flask import Flask
@@ -10,7 +11,7 @@ from flask import request
 from flask import url_for
 from flask import send_from_directory
 from werkzeug import secure_filename
-
+from src import sort
 
 _APP = Flask(__name__)
 
@@ -64,13 +65,29 @@ def analysis(analysis_id):
     )
     return response
 
+# @_APP.route('/sort_sequence/<analysis_id>')
+# def sort_sequence(analysis_id):
+#     data = _get_analysis_table_from_id(analysis_id)
+#     FastqSorter(fasta_file_path,readlevel_assignment_tsv_file_path, analysis_id = "")
+#     response = render_template(
+#         'show_analysis.html',
+#         analysis_id=analysis_id,
+#         analysis_data=data,
+#     )
+#     return response    
+
   
 
 
 @_APP.route('/uploads/<filename>')
 def uploaded_file(filename):
-    _upload_genome_file(filename)
+    sample_id = _upload_genome_file(filename)
+    _change_file_name(filename,sample_id)
     return redirect(url_for('index'))
+
+def _change_file_name(filename,sample_id):
+    filepath = join_path(_APP.config['UPLOAD_FOLDER'], filename)
+    os.rename(filepath, filepath.replace(filename.rsplit('.', 1)[0],sample_id))
 
 
 def _is_allowed_file(filename):
@@ -86,12 +103,13 @@ def _upload_genome_file(filename):
         filename
     )
     files = {'file': open(absolute_filename, 'rb')}
-    requests.post(
+    response = requests.post(
         _BASE_API_URL + "upload",
         auth=(_ONECODEX_APIKEY, '',),
         files=files,
         allow_redirects=True,
     )
+    return response.json()['sample_id']
 
 
 def _get_analyses():
