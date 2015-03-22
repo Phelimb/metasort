@@ -4,6 +4,9 @@ from os import rename
 
 import requests
 
+from genome_sort.exceptions import AnalysisNotFound
+
+
 _ALLOWED_EXTENSIONS = set(['fastq'])
 _ONECODEX_APIKEY = environ['ONE_CODEX_API_KEY']
 _BASE_API_URL = "https://beta.onecodex.com/api/v0/"
@@ -46,16 +49,6 @@ def get_analysis_table_from_id(analysis_id):
     response = _get_request("analyses/{}/table".format(analysis_id))
     return response.json()
 
-
-def _get_request(sub_url):
-    response = requests.get(
-        _BASE_API_URL + sub_url,
-        auth=(_ONECODEX_APIKEY, ''),
-        allow_redirects=True,
-    )
-    return response
-
-
 def format_analyses(analyses):
     formatted_analyses = []
     for analysis in analyses:
@@ -77,10 +70,19 @@ def format_analyses(analyses):
     return formatted_analyses
 
 
-class AnalysisNotFound(Exception):
-    pass
-
-
 def get_sample_id_from_analysis_id(analysis_id):
-    pass
+    analyses = get_analyses()
+    for analysis in analyses:
+        if analysis['id'] == analysis_id:
+            return analysis['sample_id']
+    raise AnalysisNotFound
+
+
+def _get_request(sub_url):
+    response = requests.get(
+        _BASE_API_URL + sub_url,
+        auth=(_ONECODEX_APIKEY, ''),
+        allow_redirects=True,
+    )
+    return response
 
