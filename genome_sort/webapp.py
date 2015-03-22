@@ -39,7 +39,7 @@ def get_taxon_to_species_dict():
 def index():
     files = []
     for file in listdir(_UPLOAD_FOLDER):
-        if file.endswith(".fastq"):
+        if file.endswith((".fastq",".fq",".fa",".fasta")):
             files.append(file)
 
     analyses = get_analyses()
@@ -58,6 +58,7 @@ def upload_file():
     file = request.files['file']
     if file and is_allowed_file(file.filename):
         filename = secure_filename(file.filename)
+        print filename
         file.save(join_path(APP.config['UPLOAD_FOLDER'], filename))
         return redirect('/uploads/%s' % filename)
     else:
