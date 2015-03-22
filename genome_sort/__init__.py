@@ -1,8 +1,11 @@
-from os.path import join as join_path
+from os import remove as remove_file
 from os import environ
 from os import rename
+from os.path import join as join_path
+from gzip import GzipFile
 
-import requests
+from requests import get as get_request
+from requests import post as post_request
 
 from genome_sort.exceptions import AnalysisNotFound
 
@@ -31,7 +34,7 @@ def upload_genome_file(filename):
         filename
     )
     files = {'file': open(absolute_filename, 'rb')}
-    response = requests.post(
+    response = post_request(
         _BASE_API_URL + "upload",
         auth=(_ONECODEX_APIKEY, '',),
         files=files,
@@ -48,6 +51,7 @@ def get_analyses():
 def get_analysis_table_from_id(analysis_id):
     response = _get_request("analyses/{}/table".format(analysis_id))
     return response.json()
+
 
 def format_analyses(analyses):
     formatted_analyses = []
@@ -78,11 +82,47 @@ def get_sample_id_from_analysis_id(analysis_id):
     raise AnalysisNotFound
 
 
+def process_analysis(analysis_id):
+    local_filename = _download_raw_analysis(analysis_id)
+
+    local_unzipped_filename = join_path(
+        _UPLOAD_FOLDER,
+        'read_data_{}.tsv'.format(analysis_id),
+    )
+    _unzip_file(local_filename, local_unzipped_filename)
+
+    remove_file(local_filename)
+    return local_unzipped_filename
+
+
+def _download_raw_analysis(analysis_id):
+    local_filename = join_path(
+        _UPLOAD_FOLDER,
+        'raw_{}.tsv.gz'.format(analysis_id),
+    )
+    raw_analysis = get_request(
+        '{}analyses/{}/raw'.format(_BASE_API_URL, analysis_id),
+        auth=(_ONECODEX_APIKEY, ''),
+        stream=True,
+    )
+    with open(local_filename, 'wb') as f:
+        for chunk in raw_analysis.iter_content(chunk_size=1024):
+            if chunk:
+                f.write(chunk)
+                f.flush()
+    return local_filename
+
+
+def _unzip_file(gz_file, target_filename):
+    unzipped_file = GzipFile(fileobj=open(gz_file, 'rb'))
+    with open(target_filename, 'wb') as _file:
+        _file.write(unzipped_file.read())
+
+
 def _get_request(sub_url):
-    response = requests.get(
+    response = get_request(
         _BASE_API_URL + sub_url,
         auth=(_ONECODEX_APIKEY, ''),
         allow_redirects=True,
     )
     return response
-
