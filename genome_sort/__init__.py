@@ -55,6 +55,9 @@ def get_analysis_table_from_id(analysis_id):
     response = _get_request("analyses/{}/table".format(analysis_id))
     return response.json()
 
+def get_analysis_from_id(analysis_id):
+    response = _get_request("analyses/{}".format(analysis_id))
+    return response.json()
 
 def format_analyses(analyses):
     formatted_analyses = []

@@ -16,6 +16,7 @@ from werkzeug import secure_filename
 from genome_sort import change_file_name
 from genome_sort import get_analyses
 from genome_sort import get_analysis_table_from_id
+from genome_sort import get_analysis_from_id
 from genome_sort import get_sample_id_from_analysis_id
 from genome_sort import is_allowed_file
 from genome_sort import upload_genome_file
@@ -109,19 +110,19 @@ def analysis(analysis_id):
 
 @APP.route('/sort_sequence/<analysis_id>')
 def sort_sequence(analysis_id):
-    sample_id = get_sample_id_from_analysis_id(analysis_id)
-    try:
+    analysis = get_analysis_from_id(analysis_id)
+    if analysis['analysis_status'] != "Success":
+         flash('Please wait until analysis is complete', 'alert')
+         return redirect('/')
+    else:
+        sample_id = get_sample_id_from_analysis_id(analysis_id)
         process_analysis(analysis_id)
-    except IOError:
-        pass
-    fasta_file_path =  glob.glob(join_path(APP.config['UPLOAD_FOLDER'],sample_id + "*"))[0]
-    readlevel_assignment_tsv_file_path = join_path(APP.config['UPLOAD_FOLDER'],"read_data_" + analysis_id + '.tsv')
-    if not os.path.exists(readlevel_assignment_tsv_file_path):
-        flash('Please wait until analysis is complete', 'alert')
-    sorter = FastqSorter(fasta_file_path,readlevel_assignment_tsv_file_path, analysis_id = analysis_id)
-    sorter.sort()
-    sorter.write_sorted_files(out_dir = join_path(APP.config['UPLOAD_FOLDER'],analysis_id) )
-    return redirect('/analysis/%s' % analysis_id)
+        fasta_file_path =  glob.glob(join_path(APP.config['UPLOAD_FOLDER'],sample_id + "*"))[0]
+        readlevel_assignment_tsv_file_path = join_path(APP.config['UPLOAD_FOLDER'],"read_data_" + analysis_id + '.tsv')           
+        sorter = FastqSorter(fasta_file_path,readlevel_assignment_tsv_file_path, analysis_id = analysis_id)
+        sorter.sort()
+        sorter.write_sorted_files(out_dir = join_path(APP.config['UPLOAD_FOLDER'],analysis_id) )
+        return redirect('/analysis/%s' % analysis_id)
 
 @APP.route('/uploads/<filename>')
 def uploaded_file(filename):
