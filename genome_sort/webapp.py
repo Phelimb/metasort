@@ -112,7 +112,7 @@ def analysis(analysis_id):
 def sort_sequence(analysis_id):
     analysis = get_analysis_from_id(analysis_id)
     if analysis['analysis_status'] != "Success":
-         flash('Please wait until analysis is complete', 'alert')
+         flash('Please wait until analysis is complete (button will turn green)', 'alert')
          return redirect('/')
     else:
         sample_id = get_sample_id_from_analysis_id(analysis_id)
