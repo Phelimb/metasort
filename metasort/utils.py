@@ -147,8 +147,7 @@ def _get_request(sub_url):
 
 def get_taxon_to_species_dict():
     tax_id_to_species = {}
-    with open('metasort/taxonomy_metadata.json','r') as infile:
-        data = json.load(infile)
-        for tax_id,species_dict in data.iteritems():
-            tax_id_to_species[tax_id] = species_dict['name']
+    data = _get_request("analyses").json()
+    for tax_id,species_dict in data.iteritems():
+        tax_id_to_species[tax_id] = species_dict['name']
     return tax_id_to_species
