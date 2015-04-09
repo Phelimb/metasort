@@ -9,19 +9,19 @@ from os.path import join as join_path
 import logging
 logging.basicConfig(level=logging.WARNING)
 
-from metasort import is_allowed_file
-from metasort import upload_genome_file_path
-from metasort import get_analyses
-from metasort import get_analysis_from_id
-from metasort import process_analysis
-from metasort.sort import FastqSorter
+from utils import is_allowed_file
+from utils import upload_genome_file_path
+from utils import get_analyses
+from utils import get_analysis_from_id
+from utils import process_analysis
+from sort import FastqSorter
 from time import sleep
-from metasort import get_taxon_to_species_dict
+from utils import get_taxon_to_species_dict
 
 parser = argparse.ArgumentParser(description='Sort sequence data by species using OneCodex')
 parser.add_argument('file', metavar='f', type=str,  help='path to a fasta or fastq file')
 parser.add_argument('outdir',type=str,  help='output directory', default=None, nargs='?')
-args = parser.parse_args()
+
 
 
 class Cli(object):
@@ -97,8 +97,10 @@ class Cli(object):
 		sorter.write_sorted_files(self.outdir, taxon_id_to_species_name = get_taxon_to_species_dict() )
 
 def main():
+	args = parser.parse_args()
 	cli = Cli(args)
 	cli.run()
 
-main()
+if __name__ == "__main__":
+    main(sys.argv[1:])
 
