@@ -30,7 +30,6 @@ class Cli(object):
 		self.file = args.file 
 		self.outdir = args.outdir
 		self._check_inputs()
-		self._change_file_ext_to_long()
 		self.sample_id = ""
 		self.analysis_id = ""
 
@@ -50,13 +49,6 @@ class Cli(object):
 		self._process_analysis()
 		self._sort_sequence()
 		print self.outdir
-
-	def _change_file_ext_to_long(self):
-	    ext = self.file.rsplit('.', 1)[1]
-	    if ext == "fq":
-	        self.file = self.file.replace("fq","fastq")
-	    elif ext == "fa":
-	        self.file =self.file.replace("fa","fasta")
 
 	def _upload_genome_file_path(self):
 		self.sample_id = upload_genome_file_path(self.file)
