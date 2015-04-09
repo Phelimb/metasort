@@ -84,15 +84,6 @@ class Cli(object):
 		sorter.sort()	
 		sorter.write_sorted_files(self.outdir, taxon_id_to_species_name = get_taxon_to_species_dict() )
 
-
-
-
-
-
-
-
-
-
 cli = Cli(args)
 cli.run()
 
