@@ -35,6 +35,11 @@ def upload_genome_file(filename):
         _UPLOAD_FOLDER,
         filename
     )
+    return upload_genome_file_path(files)
+    
+
+
+def upload_genome_file_path(absolute_filename):
     files = {'file': open(absolute_filename, 'rb')}
     response = post_request(
         _BASE_API_URL + "upload",
@@ -43,7 +48,7 @@ def upload_genome_file(filename):
         allow_redirects=True,
     )
     sample_id = response.json()['sample_id']
-    return sample_id
+    return sample_id    
 
 
 def get_analyses():
