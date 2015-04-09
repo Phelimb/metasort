@@ -8,6 +8,10 @@ Upload a Fast(a/q) file and download individual files sorted by species.
 
 ## CLI
 
+set your OneCodex API key
+
+export ONE_CODEX_API_KEY=f8##################78
+
 usage: cli.py [-h] f [outdir]
 
 ./cli.py seq.fa /path/to/outdir
