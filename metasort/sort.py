@@ -21,13 +21,12 @@ def unique(seq):
 
 class FastqSorter(object):
 
-    def __init__(self, fasta_file_path,readlevel_assignment_tsv_file_path, analysis_id = ""):
+    def __init__(self, fasta_file_path,readlevel_assignment_tsv_file_path):
         self.fasta_file_path = fasta_file_path
         self.readlevel_assignment_tsv_file_path = readlevel_assignment_tsv_file_path
         self.assignment_dic = {}
         self.get_assignment_dic()
         self.records_by_tax_id= {}
-        self.analysis_id = analysis_id
         self.ext = self.fasta_file_path.rsplit('.', 1)[1]
 
     def sort(self):
@@ -42,7 +41,6 @@ class FastqSorter(object):
                 taxon_id = row[1]
 
                 self.assignment_dic[read_id] = taxon_id
-            print self.assignment_dic
 
     def sort_reads_by_taxon_id(self):
         for i,record in enumerate(SeqIO.parse(self.fasta_file_path, self.ext)):
@@ -52,11 +50,14 @@ class FastqSorter(object):
             except KeyError:
                 self.records_by_tax_id[taxon_id] = [record]
 
-    def write_sorted_files(self,out_dir):
+    def write_sorted_files(self,out_dir, taxon_id_to_species_name = {}):
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
         for taxon_id,record_list in self.records_by_tax_id.iteritems():
-            filename = ".".join([taxon_id , self.ext])
+            fileprefix = taxon_id_to_species_name.get(taxon_id,taxon_id)
+            if fileprefix == "null":
+                fileprefix = "unknown"
+            filename = ".".join([fileprefix , self.ext])
             with open(join_path(out_dir,filename),'w') as outfile:
                 SeqIO.write(record_list, outfile, self.ext)
 

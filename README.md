@@ -1,4 +1,4 @@
-# Genome Sort
+# Metasort
 
 A Digital Health Hack Weekend Project using OneCodex API.
 

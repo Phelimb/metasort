@@ -13,15 +13,16 @@ from flask import url_for
 from flask import send_from_directory
 from werkzeug import secure_filename
 
-from genome_sort import change_file_name
-from genome_sort import get_analyses
-from genome_sort import get_analysis_table_from_id
-from genome_sort import get_analysis_from_id
-from genome_sort import get_sample_id_from_analysis_id
-from genome_sort import is_allowed_file
-from genome_sort import upload_genome_file
-from genome_sort import format_analyses
-from genome_sort import process_analysis
+from metasort import change_file_name
+from metasort import get_analyses
+from metasort import get_analysis_table_from_id
+from metasort import get_analysis_from_id
+from metasort import get_sample_id_from_analysis_id
+from metasort import is_allowed_file
+from metasort import upload_genome_file
+from metasort import format_analyses
+from metasort import process_analysis
+from metasort import get_taxon_to_species_dict
 
 from sort import FastqSorter
 APP = Flask(__name__)
@@ -29,14 +30,6 @@ APP.secret_key = 'saldjsaldjlsdlsjdal'
 
 _UPLOAD_FOLDER = '/tmp'
 APP.config['UPLOAD_FOLDER'] = _UPLOAD_FOLDER
-
-def get_taxon_to_species_dict():
-    tax_id_to_species = {}
-    with open('genome_sort/taxonomy_metadata.json','r') as infile:
-        data = json.load(infile)
-        for tax_id,species_dict in data.iteritems():
-            tax_id_to_species[tax_id] = species_dict['name']
-    return tax_id_to_species
 
 
 @APP.route('/')
