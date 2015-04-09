@@ -13,15 +13,15 @@ from flask import url_for
 from flask import send_from_directory
 from werkzeug import secure_filename
 
-from genome_sort import change_file_name
-from genome_sort import get_analyses
-from genome_sort import get_analysis_table_from_id
-from genome_sort import get_analysis_from_id
-from genome_sort import get_sample_id_from_analysis_id
-from genome_sort import is_allowed_file
-from genome_sort import upload_genome_file
-from genome_sort import format_analyses
-from genome_sort import process_analysis
+from metasort import change_file_name
+from metasort import get_analyses
+from metasort import get_analysis_table_from_id
+from metasort import get_analysis_from_id
+from metasort import get_sample_id_from_analysis_id
+from metasort import is_allowed_file
+from metasort import upload_genome_file
+from metasort import format_analyses
+from metasort import process_analysis
 
 from sort import FastqSorter
 APP = Flask(__name__)

@@ -7,7 +7,7 @@ from gzip import GzipFile
 from requests import get as get_request
 from requests import post as post_request
 
-from genome_sort.exceptions import AnalysisNotFound
+from metasort.exceptions import AnalysisNotFound
 from flask import request
 
 _ALLOWED_EXTENSIONS = set(["fastq","fq","fa","fasta"])

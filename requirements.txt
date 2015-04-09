@@ -2,3 +2,4 @@ Flask==0.10.1
 requests>=2.6
 Biopython
 gunicorn
+nose
