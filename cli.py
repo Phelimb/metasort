@@ -9,6 +9,7 @@ from os.path import join as join_path
 import logging
 logging.basicConfig(level=logging.WARNING)
 
+from metasort import is_allowed_file
 from metasort import upload_genome_file_path
 from metasort import get_analyses
 from metasort import get_analysis_from_id
@@ -29,13 +30,17 @@ class Cli(object):
 		self.file = args.file 
 		self.outdir = args.outdir
 		self._check_inputs()
+		self._change_file_ext_to_long()
 		self.sample_id = ""
 		self.analysis_id = ""
 
 	def _check_inputs(self):
 		if self.file is None:
 			print parser.print_help()
-			sys.exit()		
+			sys.exit()
+		if not is_allowed_file(self.file):
+			print "Unzipped fastq or fasta files with ext fa,fq,fasta,fastq"
+			sys.exit()
 
 	def run(self):
 		self._upload_genome_file_path()
@@ -45,6 +50,13 @@ class Cli(object):
 		self._process_analysis()
 		self._sort_sequence()
 		print self.outdir
+
+	def _change_file_ext_to_long(self):
+	    ext = self.file.rsplit('.', 1)[1]
+	    if ext == "fq":
+	        self.file = self.file.replace("fq","fastq")
+	    elif ext == "fa":
+	        self.file =self.file.replace("fa","fasta")
 
 	def _upload_genome_file_path(self):
 		self.sample_id = upload_genome_file_path(self.file)
