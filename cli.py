@@ -3,15 +3,19 @@
 
 import argparse
 import sys
+import os
+from os.path import join as join_path
+
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.WARNING)
 
 from metasort import upload_genome_file_path
 from metasort import get_analyses
 from metasort import get_analysis_from_id
 from metasort import process_analysis
-
+from metasort.sort import FastqSorter
 from time import sleep
+from metasort import get_taxon_to_species_dict
 
 parser = argparse.ArgumentParser(description='Sort sequence data by species using OneCodex')
 parser.add_argument('file', metavar='f', type=str,  help='path to a fasta or fastq file')
@@ -36,8 +40,11 @@ class Cli(object):
 	def run(self):
 		self._upload_genome_file_path()
 		self._get_analysis_id()
+		self._make_out_dir()
 		self._wait_for_results_to_proccess()
 		self._process_analysis()
+		self._sort_sequence()
+		print self.outdir
 
 	def _upload_genome_file_path(self):
 		self.sample_id = upload_genome_file_path(self.file)
@@ -50,19 +57,34 @@ class Cli(object):
 				self.analysis_id = a['id']
 		logging.info("analysis_id: %s" % self.analysis_id) 
 
+	def _make_out_dir(self):
+		if not self.outdir:
+			self.outdir = self.analysis_id
+		if not os.path.exists(self.outdir):
+			os.makedirs(self.outdir)
+
 	def _wait_for_results_to_proccess(self):
 		process_complete = False
 		logging.info("Starting analysis")
 		while not process_complete:
 			analysis = get_analysis_from_id(self.analysis_id)
-			if analysis['analysis_status'] == "Success":
+			if analysis['analysis_status'] != "Pending":
 				process_complete = True
 			else:
-				sleep(5)
+				logging.info(analysis['analysis_status'])
+				sleep(30)
 		logging.info("Ending analysis")
 
 	def _process_analysis(self):
-		process_analysis(self.analysis_id)
+		process_analysis(self.analysis_id, dir = self.outdir)
+
+	def _sort_sequence(self):
+		readlevel_assignment_tsv_file_path = join_path(self.outdir,"read_data_" + self.analysis_id + '.tsv')           
+		sorter = FastqSorter(self.file,readlevel_assignment_tsv_file_path)
+		sorter.sort()	
+		sorter.write_sorted_files(self.outdir, taxon_id_to_species_name = get_taxon_to_species_dict() )
+
+
 
 
 

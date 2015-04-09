@@ -2,6 +2,9 @@ from os import remove as remove_file
 from os import environ
 from os import rename
 from os.path import join as join_path
+
+import json
+
 from gzip import GzipFile
 
 from requests import get as get_request
@@ -93,11 +96,11 @@ def get_sample_id_from_analysis_id(analysis_id):
     raise AnalysisNotFound
 
 
-def process_analysis(analysis_id):
+def process_analysis(analysis_id,dir = _UPLOAD_FOLDER):
     local_filename = _download_raw_analysis(analysis_id)
 
     local_unzipped_filename = join_path(
-        _UPLOAD_FOLDER,
+        dir,
         'read_data_{}.tsv'.format(analysis_id),
     )
     _unzip_file(local_filename, local_unzipped_filename)
@@ -137,3 +140,11 @@ def _get_request(sub_url):
         allow_redirects=True,
     )
     return response
+
+def get_taxon_to_species_dict():
+    tax_id_to_species = {}
+    with open('metasort/taxonomy_metadata.json','r') as infile:
+        data = json.load(infile)
+        for tax_id,species_dict in data.iteritems():
+            tax_id_to_species[tax_id] = species_dict['name']
+    return tax_id_to_species
