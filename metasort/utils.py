@@ -2,7 +2,7 @@ from os import remove as remove_file
 from os import environ
 from os import rename
 from os.path import join as join_path
-
+import logging
 import json
 
 from gzip import GzipFile
@@ -14,7 +14,11 @@ from metasort.exceptions import AnalysisNotFound
 from flask import request
 
 _ALLOWED_EXTENSIONS = set(["fastq","fq","fa","fasta"])
-_ONECODEX_APIKEY = environ['ONE_CODEX_API_KEY']
+try:
+	_ONECODEX_APIKEY = environ['ONE_CODEX_API_KEY']
+except KeyError:
+	logging.error('Please set your ONE_CODEX_API_KEY. i.e. export ONE_CODEX_API_KEY="123535643"')
+
 _BASE_API_URL = "https://beta.onecodex.com/api/v0/"
 _UPLOAD_FOLDER = '/tmp'
 

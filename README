@@ -10,11 +10,12 @@ Upload a Fast(a/q) file and download individual files sorted by species.
 
 set your OneCodex API key
 
-export ONE_CODEX_API_KEY=f8##################78
+export ONE_CODEX_API_KEY=f8xxxxxxxxxxx78
 
-usage: cli.py [-h] f [outdir]
+source venv/bin/activate
+pip install metasort
 
-./cli.py seq.fa /path/to/outdir
+metasort seq.fa /path/to/outdir
 
 
 ## Web

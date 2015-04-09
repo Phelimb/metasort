@@ -1,4 +1,8 @@
+dist/
+metasort.egg-info/
+metasort.egg-info
 venv
 build
 *.pyc
 *~
+.pypirc

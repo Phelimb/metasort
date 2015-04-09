@@ -96,11 +96,11 @@ class Cli(object):
 		sorter.sort()	
 		sorter.write_sorted_files(self.outdir, taxon_id_to_species_name = get_taxon_to_species_dict() )
 
-def main():
-	args = parser.parse_args()
-	cli = Cli(args)
+def main(argv=sys.argv[1:]):
+	args = parser.parse_args(argv)
+	cli = Cli(argv)
 	cli.run()
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main()
 
