@@ -11,7 +11,7 @@ import csv
 from collections import Counter
 import os
 from os.path import join as join_path
-
+import string
 
 def unique(seq):
     seen = set()
@@ -66,6 +66,7 @@ class FastqSorter(object):
             if fileprefix == "null":
                 fileprefix = "unknown"
             filename = ".".join([fileprefix , self.ext])
+            self._make_safe_file_name(filename)
             with open(join_path(out_dir,filename),'w') as outfile:
                 SeqIO.write(record_list, outfile, self.long_ext)
 
@@ -75,3 +76,6 @@ class FastqSorter(object):
     def count_read_assignment(self):
         return Counter(self.assignment_dic.values())
 
+    def _make_safe_file_name(self,filename):
+        valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
+        return ''.join(c for c in filename if c in valid_chars)
