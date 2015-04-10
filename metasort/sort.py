@@ -66,7 +66,7 @@ class FastqSorter(object):
             if fileprefix == "null":
                 fileprefix = "unknown"
             filename = ".".join([fileprefix , self.ext])
-            self._make_safe_file_name(filename)
+            filename = self._make_safe_file_name(filename)
             with open(join_path(out_dir,filename),'w') as outfile:
                 SeqIO.write(record_list, outfile, self.long_ext)
 
