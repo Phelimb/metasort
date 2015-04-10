@@ -2,7 +2,7 @@ from setuptools import setup
  
 setup(
     name='metasort',
-    version='0.3.4',
+    version='0.3.6',
     packages=['metasort', ],
     license='MIT',
     url='http://github.com/phelimb/metasort',

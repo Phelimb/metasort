@@ -28,6 +28,14 @@ class FastqSorter(object):
         self.get_assignment_dic()
         self.records_by_tax_id= {}
         self.ext = self.fasta_file_path.rsplit('.', 1)[1]
+        self.long_ext = self.ext
+        self._change_file_ext_to_long()
+
+    def _change_file_ext_to_long(self):
+        if self.long_ext == "fq":
+            self.long_ext = "fastq"
+        elif self.long_ext == "fa":
+            self.long_ext = "fasta"
 
     def sort(self):
         self.sort_reads_by_taxon_id()
@@ -43,7 +51,7 @@ class FastqSorter(object):
                 self.assignment_dic[read_id] = taxon_id
 
     def sort_reads_by_taxon_id(self):
-        for i,record in enumerate(SeqIO.parse(self.fasta_file_path, self.ext)):
+        for i,record in enumerate(SeqIO.parse(self.fasta_file_path, self.long_ext)):
             taxon_id = self.assignment_dic[record.description]
             try:
                 self.records_by_tax_id[taxon_id].append(record)
@@ -59,7 +67,7 @@ class FastqSorter(object):
                 fileprefix = "unknown"
             filename = ".".join([fileprefix , self.ext])
             with open(join_path(out_dir,filename),'w') as outfile:
-                SeqIO.write(record_list, outfile, self.ext)
+                SeqIO.write(record_list, outfile, self.long_ext)
 
     def get_all_species_present(self):
         return unique(self.assignment_dic.values())
@@ -67,8 +75,3 @@ class FastqSorter(object):
     def count_read_assignment(self):
         return Counter(self.assignment_dic.values())
 
-
-
-
-# sorter = FastqSorter("/Users/phelimb/Dropbox/Mykrobe_test_samples/SampleName_S1_L001_R1_001.fastq","SampleName_S1_L001_R1_001.fastq.gz.results.tsv")
-# sorter.sort()

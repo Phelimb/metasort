@@ -52,14 +52,14 @@ class Cli(object):
 
 	def _upload_genome_file_path(self):
 		self.sample_id = upload_genome_file_path(self.file)
-		logging.info("sample_id: %s" % self.sample_id) 
+		logging.debug("sample_id: %s" % self.sample_id) 
 
 	def _get_analysis_id(self):
 		analyses = get_analyses()
 		for a in analyses:
 			if a['sample_id'] == self.sample_id and a['reference_name'] == "One Codex Database":
 				self.analysis_id = a['id']
-		logging.info("analysis_id: %s" % self.analysis_id) 
+		logging.debug("analysis_id: %s" % self.analysis_id) 
 
 	def _make_out_dir(self):
 		if not self.outdir:
@@ -69,15 +69,15 @@ class Cli(object):
 
 	def _wait_for_results_to_proccess(self):
 		process_complete = False
-		logging.info("Starting analysis")
+		print ("Starting analysis")
 		while not process_complete:
 			analysis = get_analysis_from_id(self.analysis_id)
 			if analysis['analysis_status'] != "Pending":
 				process_complete = True
 			else:
-				logging.info(analysis['analysis_status'])
+				logging.debug(analysis['analysis_status'])
 				sleep(30)
-		logging.info("Ending analysis")
+		logging.debug("Ending analysis")
 
 	def _process_analysis(self):
 		process_analysis(self.analysis_id, dir = self.outdir)
