@@ -15,7 +15,16 @@ export ONE_CODEX_API_KEY=f8xxxxxxxxxxx78
 source venv/bin/activate
 pip install metasort
 
-metasort seq.fa /path/to/outdir
+metasort seq.fq /path/to/outdir
+
+wc -l /path/to/outdir/*.fq | sort -n -k1 | tail
+    19648 3847f81fdf2f4673/Cellular organisms.fq
+    30016 3847f81fdf2f4673/Staphylococcus aureus subsp. aureus.fq
+    81680 3847f81fdf2f4673/Bacteria.fq
+   126364 3847f81fdf2f4673/Staphylococcus epidermidis.fq
+   398684 3847f81fdf2f4673/Staphylococcus.fq
+  2030880 3847f81fdf2f4673/Firmicutes.fq
+  3195432 3847f81fdf2f4673/Staphylococcus aureus.fq
 
 
 ## Web
