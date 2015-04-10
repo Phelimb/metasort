@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-"""A command line interface for sorting metagenomic sequence data using the onecodex API"""
+"""A command line interface for sorting metagenomic sequence data using the One Codex API"""
 
 import argparse
 import sys
@@ -18,7 +18,7 @@ from sort import FastqSorter
 from time import sleep
 from utils import get_taxon_to_species_dict
 
-parser = argparse.ArgumentParser(description='Sort sequence data by species using OneCodex')
+parser = argparse.ArgumentParser(description='Sort sequence data by species using One Codex')
 parser.add_argument('file', metavar='f', type=str,  help='path to a fasta or fastq file')
 parser.add_argument('outdir',type=str,  help='output directory', default=None, nargs='?')
 

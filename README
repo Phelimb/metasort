@@ -1,14 +1,14 @@
 # Metasort
 
-A Digital Health Hack Weekend Project using OneCodex API.
+A Digital Health Hack Weekend Project using One Codex API.
 
-Filter reads based on taxonomy assignment from OneCodex.
+Filter reads based on taxonomy assignment from One Codex.
 
-Upload a Fast(a/q) file and download individual files sorted by species. 
+Upload a Fast(a/q) file and download individual files sorted by species.
 
 ## CLI
 
-set your OneCodex API key
+set your One Codex API key
 
 export ONE_CODEX_API_KEY=f8xxxxxxxxxxx78
 
