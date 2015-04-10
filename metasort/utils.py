@@ -12,15 +12,33 @@ from requests import post as post_request
 
 from metasort.exceptions import AnalysisNotFound
 from flask import request
+from onecodex.cli import OneCodexArgParser
+from onecodex.cli import OneCodexAuth
+
 
 _ALLOWED_EXTENSIONS = set(["fastq","fq","fa","fasta"])
-try:
-	_ONECODEX_APIKEY = environ['ONE_CODEX_API_KEY']
-except KeyError:
-	logging.error('Please set your ONE_CODEX_API_KEY. i.e. export ONE_CODEX_API_KEY="123535643"')
+# try:
+parser = OneCodexArgParser()
+args = parser.parse_args(['upload',""])
+OneCodexAuth(args)
+_ONECODEX_APIKEY = args.api_key
+# except KeyError:
+# 	logging.error('Please set your ONE_CODEX_API_KEY. i.e. export ONE_CODEX_API_KEY="123535643"')
 
 _BASE_API_URL = "https://beta.onecodex.com/api/v0/"
 _UPLOAD_FOLDER = '/tmp'
+
+from cStringIO import StringIO
+import sys
+
+class Capturing(list):
+    def __enter__(self):
+        self._stdout = sys.stdout
+        sys.stdout = self._stringio = StringIO()
+        return self
+    def __exit__(self, *args):
+        self.extend(self._stringio.getvalue().splitlines())
+        sys.stdout = self._stdout
 
 
 def change_file_name(filename,sample_id):
@@ -47,14 +65,12 @@ def upload_genome_file(filename):
 
 
 def upload_genome_file_path(absolute_filename):
-    files = {'file': open(absolute_filename, 'rb')}
-    response = post_request(
-        _BASE_API_URL + "upload",
-        auth=(_ONECODEX_APIKEY, '',),
-        files=files,
-        allow_redirects=True,
-    )
-    sample_id = response.json()['sample_id']
+    parser = OneCodexArgParser()
+    args = parser.parse_args(['upload',absolute_filename])
+    OneCodexAuth(args)
+    with Capturing() as output:
+        args.run(args)
+    sample_id = output[0].split(' ')[-1][:-1]
     return sample_id    
 
 
