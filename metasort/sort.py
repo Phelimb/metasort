@@ -1,7 +1,7 @@
 """
-This script will query for an analysis from OneCodex,
-download the readlevel species assignment and sort 
-the sequence into files based on this assignment. 
+This script will query for an analysis from One Codex,
+download the readlevel species assignment and sort
+the sequence into files based on this assignment.
 """
 
 import requests
