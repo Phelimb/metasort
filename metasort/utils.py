@@ -1,7 +1,9 @@
 from os import remove as remove_file
 from os import environ
 from os import rename
+import os
 from os.path import join as join_path
+import sys
 import logging
 import json
 
@@ -16,14 +18,17 @@ from onecodex.cli import OneCodexArgParser
 from onecodex.cli import OneCodexAuth
 
 
+
 _ALLOWED_EXTENSIONS = set(["fastq","fq","fa","fasta"])
-# try:
-parser = OneCodexArgParser()
-args = parser.parse_args(['upload',""])
-OneCodexAuth(args)
-_ONECODEX_APIKEY = args.api_key
-# except KeyError:
-# 	logging.error('Please set your ONE_CODEX_API_KEY. i.e. export ONE_CODEX_API_KEY="123535643"')
+cred_fp = os.path.expanduser('~/.onecodex')
+if os.environ.get("ONE_CODEX_API_KEY") is not None:
+    _ONECODEX_APIKEY = os.environ.get("ONE_CODEX_API_KEY")
+elif os.path.exists(cred_fp):
+    creds = json.load(open(cred_fp, mode='r'))
+    _ONECODEX_APIKEY = creds["api_key"]    
+else:
+    logging.error('Please set your ONE_CODEX_API_KEY. i.e. export ONE_CODEX_API_KEY="123535643"')
+    sys.exit()
 
 _BASE_API_URL = "https://beta.onecodex.com/api/v0/"
 _UPLOAD_FOLDER = '/tmp'

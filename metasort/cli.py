@@ -57,7 +57,6 @@ class Cli(object):
 	def _get_analysis_id(self):
 		analyses = get_analyses()
 		for a in analyses:
-			print a
 			if a['sample_id'] == self.sample_id and a['reference_name'] == "One Codex Database":
 				self.analysis_id = a['id']
 		logging.info("analysis_id: %s" % self.analysis_id) 
